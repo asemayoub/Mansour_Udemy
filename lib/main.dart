@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'BMI.dart';
+import 'modules/BMI.dart';
+import 'modules/loginscreen.dart';
 
 
 void main() {
@@ -12,8 +13,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
-      home: BmiCalc(),
+      home: LoginScreen(),
     );
   }
 }
