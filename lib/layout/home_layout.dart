@@ -43,7 +43,29 @@ class _LayoutNavState extends State<LayoutNav> {
 
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: (){},
+        onPressed: () async{
+
+          // try {
+          //
+          //  var  name = await getname();
+          //
+          //  print(name);
+          //
+          //  throw('في هنا ايرور يمعلم !!!');
+          //
+          //
+          // }catch (Erorr) {
+          //
+          //   print('${Erorr.toString()}');
+          //
+          //
+          // }
+
+          getname().then((value) {
+            print(value);
+             throw('Then xczx Erorr !!!!!!');
+          }).catchError((erorr){print(erorr.toString());});
+        },
         child: Icon(Icons.add),),
       bottomNavigationBar: BottomNavigationBar(
 
@@ -77,5 +99,10 @@ class _LayoutNavState extends State<LayoutNav> {
 
 
     );
+  }
+
+  Future<String> getname() async {
+
+    return 'ahmedali';
   }
 }
