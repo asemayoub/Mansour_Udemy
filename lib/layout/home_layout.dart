@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:newtharwat/modules/archive_task/archive_tasks.dart';
 import 'package:newtharwat/modules/done_tasks/done_tasks.dart';
 import 'package:newtharwat/modules/new_tasks/new_tasks.dart';
+import 'package:sqflite/sqflite.dart';
 
 class LayoutNav extends StatefulWidget {
 
@@ -31,6 +32,13 @@ class _LayoutNavState extends State<LayoutNav> {
 
 
 
+  @override
+
+  void initState() {
+    super.initState();
+    createDatabase();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -43,28 +51,8 @@ class _LayoutNavState extends State<LayoutNav> {
 
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () async{
-
-          // try {
-          //
-          //  var  name = await getname();
-          //
-          //  print(name);
-          //
-          //  throw('في هنا ايرور يمعلم !!!');
-          //
-          //
-          // }catch (Erorr) {
-          //
-          //   print('${Erorr.toString()}');
-          //
-          //
-          // }
-
-          getname().then((value) {
-            print(value);
-             throw('Then xczx Erorr !!!!!!');
-          }).catchError((erorr){print(erorr.toString());});
+        onPressed: ()  {
+          insertToDatabase();
         },
         child: Icon(Icons.add),),
       bottomNavigationBar: BottomNavigationBar(
@@ -99,10 +87,75 @@ class _LayoutNavState extends State<LayoutNav> {
 
 
     );
-  }
+  }}
 
   Future<String> getname() async {
 
     return 'ahmedali';
   }
-}
+
+Database? database;
+
+  void createDatabase() async {
+
+
+    database = await openDatabase(
+
+      'TodoTasks.db',
+      version: 1,
+
+      onCreate: (database, version) {
+
+        print('1- Data Base Is Created ');
+
+        database.execute('CREATE TABLE Tasks (id INTEGER PRIMARY KEY, title TEXT, data TEXT, time TEXT, status TEXT ) ').then((value){
+
+          print('3-Table Is Created');
+
+        }).catchError((erorr){
+
+          print('Erorr In Data Base Is ${erorr.toString()}');
+
+        });
+
+      },
+
+      onOpen: (database) {
+
+        print('2- Data Base Is Opened');
+
+      },
+
+
+
+    );
+
+
+
+  }
+
+  void insertToDatabase()  {
+
+
+    database?.transaction((txn)async{
+
+      await txn.rawInsert(
+        'INSERT INTO Tasks (title, data, time, status) VALUES("title test","20/11/2022", "5.30pm", "Done")',
+      ).then((value){
+
+      print('$value Inserted Success fully');
+
+      }).catchError((erorr){
+
+
+        print('erorr is ${erorr.toString()}');
+      });
+
+      return null;
+
+    });
+
+  }
+
+
+
