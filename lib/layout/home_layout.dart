@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:newtharwat/modules/archive_task/archive_tasks.dart';
 import 'package:newtharwat/modules/done_tasks/done_tasks.dart';
 import 'package:newtharwat/modules/new_tasks/new_tasks.dart';
@@ -59,6 +60,7 @@ class _LayoutNavState extends State<LayoutNav> {
     // هنا انا بعمل للاسكافولد مفتاح عشان اقدر اخليه يتفتح اما ادوس الزرار
 
     var scaffoldKey = GlobalKey<ScaffoldState>();
+    var formKey = GlobalKey<FormState>();
 
     // هنا انا بعمل حالة البوتوم شيت عشان اعمله حالة شرطية يفتح ويتقفل اما ادوس الزرار
     bool isBottomSheetShown = false;
@@ -71,6 +73,7 @@ class _LayoutNavState extends State<LayoutNav> {
 
     var titleController = TextEditingController();
     var timeController = TextEditingController();
+    var dateController = TextEditingController();
 
 
 
@@ -88,11 +91,20 @@ class _LayoutNavState extends State<LayoutNav> {
         onPressed: ()  {
           
 
+
          if(isBottomSheetShown) {
 
-           Navigator.pop(context);
+           // to validate form key
 
-           isBottomSheetShown = false;
+           if(formKey.currentState!.validate()){
+
+             Navigator.pop(context);
+
+             isBottomSheetShown = false;
+
+           }
+
+
 
 
 
@@ -106,50 +118,113 @@ class _LayoutNavState extends State<LayoutNav> {
            scaffoldKey.currentState?.showBottomSheet((context) => Container(
              color: Colors.grey[150],
              padding: EdgeInsets.all(20),
-             child: Column(
-               mainAxisSize: MainAxisSize.min,
+             child: Form(
+               key: formKey,
+               child: Column(
+                 mainAxisSize: MainAxisSize.min,
 
 
-               children: [
+                 children: [
 
 
+                     DefaultInput(
+
+                       controller: titleController,
+                       Type: TextInputType.text,
+                       label: 'Task Title',
+                       PrefexIcon: Icons.title,
+                       onSubmit: (value){},
+                       validate: (String? value){
+
+                         if(value!.isEmpty){
+
+                           return 'Task Title Cant be empty';
+
+                         }else {
+
+                           return null;
+                         }
+
+                       },
+
+
+
+
+
+                     ),
+                     SizedBox(height: 15,),
+                     DefaultInput(
+
+                       controller: timeController,
+                       Type: TextInputType.datetime,
+                       label: 'Time',
+                       PrefexIcon: Icons.watch,
+                       onSubmit: (value){},
+                       ontapFun: (){
+
+                         // to show time in input
+
+                         showTimePicker(context: context,
+                             // to set time now
+                             initialTime: TimeOfDay.now()).then((value){
+                              // to format time at pm or am
+                               timeController.text = value!.format(context).toString();
+
+                               print(value.format(context));
+
+
+                         });
+
+
+
+                       },
+                       validate: (String? value){
+
+                         if(value!.isEmpty){
+
+                           return 'Time  Cant be empty';
+
+                         }else {
+
+                           return null;
+                         }
+
+                       },
+
+
+
+
+
+                     ),
+                     SizedBox(height: 15,),
                    DefaultInput(
 
-                     controller: titleController,
-                     Type: TextInputType.text,
-                     label: 'Task Title',
-                     PrefexIcon: Icons.title,
-                     onSubmit: (value){},
-                     validate: (String? value){
-
-                       if(value!.isEmpty){
-
-                         return 'Task Title Cant be empty';
-
-                       }else {
-
-                         return null;
-                       }
-
-                     },
-
-
-
-
-
-                   ),
-                   SizedBox(height: 15,),
-                   DefaultInput(
-
-                     controller: timeController,
+                     controller: dateController,
                      Type: TextInputType.datetime,
-                     label: 'Time',
-                     PrefexIcon: Icons.watch,
+                     label: 'Date',
+                     PrefexIcon: Icons.date_range,
                      onSubmit: (value){},
                      ontapFun: (){
 
-                       showTimePicker(context: context,
-                           initialTime: TimeOfDay.now());
+                       // to show Date in input
+
+                       showDatePicker(context: context,
+                           initialDate: DateTime.now(),
+                           firstDate: DateTime.now(),
+                           lastDate: DateTime.parse('2024-05-03')).then((value){
+
+                             print(
+
+
+                               DateFormat.yMMMd().format(value!)
+
+                             );
+                             dateController.text = DateFormat.yMMMd().format(value);
+
+                       });
+
+
+
 
                      },
                      validate: (String? value){
@@ -174,9 +249,10 @@ class _LayoutNavState extends State<LayoutNav> {
 
 
 
-                 ]
+                   ]
 
 
+               ),
              ),
            ));
            isBottomSheetShown = true;
