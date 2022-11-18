@@ -62,19 +62,21 @@ Widget DefaultInput({
 
  required String label,
 
-IconData? PrefexIcon,
+required IconData? PrefexIcon,
 
  IconData? SufixIcon,
 
  bool obSecure = false,
 
- Function(String?)? onSubmit,
+  Function(String)? onSubmit,
 
- String? Function(String?)? validate,
+ required String? Function(String?)? validate,
 
- Function(String?)? onChange,
+ Function(String)? onChange,
 
  Function()? ShowPassFun,
+ Function()? ontapFun,
+
 
 
 
@@ -85,6 +87,7 @@ IconData? PrefexIcon,
 }) =>
 
 TextFormField(
+ onTap:ontapFun ,
 controller: controller,
 keyboardType: Type,
 onFieldSubmitted:onSubmit!,
