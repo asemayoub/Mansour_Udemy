@@ -15,7 +15,14 @@ class CounterClass extends StatelessWidget {
       create: (BuildContext context) => CounterCubit(),
       child: BlocConsumer<CounterCubit, CounterStates>(
 
-        listener: (context, state){},
+        listener: (context, state){
+
+          if (state is CounterMinusState) print('Minus State${state.counter}');
+          if (state is CounterPlusState) print('Plus State${state.counter}');
+          if (state is CounterResetState) print('Reset State${state.counter}');
+
+
+        },
 
         builder:(context, state){
 
@@ -40,6 +47,9 @@ class CounterClass extends StatelessWidget {
                       TextButton(onPressed: (){
 
 
+                        CounterCubit.get(context).minus();
+
+
 
                       }, child:
 
@@ -62,7 +72,7 @@ class CounterClass extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 8.0,),
                         child: Text(
 
-                          'counter',
+                          '${CounterCubit.get(context).counter}',
                           style: TextStyle(fontSize: 40.0, fontWeight: FontWeight.bold,)
 
                           ,),
@@ -70,6 +80,9 @@ class CounterClass extends StatelessWidget {
 
 
                       TextButton(onPressed: (){
+
+
+                        CounterCubit.get(context).plus();
 
 
 
@@ -98,6 +111,9 @@ class CounterClass extends StatelessWidget {
 
                     children: [
                       TextButton(onPressed: () {
+
+
+                        CounterCubit.get(context).reset();
 
 
                       }, child: Text('Reset',style: TextStyle(fontSize: 15.0,),))
