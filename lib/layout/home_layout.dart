@@ -14,14 +14,6 @@ class LayoutNav extends StatefulWidget {
 }
 
 class _LayoutNavState extends State<LayoutNav> {
-  AnimationController? animationController;
-
-  @override
-  dispose() {
-    animationController!.dispose(); // you need this
-    super.dispose();
-  }
-
 
 
   List<Widget> screens = [
@@ -39,6 +31,7 @@ class _LayoutNavState extends State<LayoutNav> {
 
   ];
   int currentIndex = 0;
+  Database? database;
 
 
 
@@ -67,7 +60,7 @@ class _LayoutNavState extends State<LayoutNav> {
 
     // هنا بعرف الايقون بتاعه الفلوت اكشن بوتوم بفاريابل عشان اغيرها
 
-    IconData? fabicon = Icons.edit;
+    IconData? fabicon = Icons.add;
 
     // Form Controler Variables :
 
@@ -98,9 +91,15 @@ class _LayoutNavState extends State<LayoutNav> {
 
            if(formKey.currentState!.validate()){
 
-             Navigator.pop(context);
+             insertToDatabase(
+                 titleController, dateController, timeController).then((value){
 
-             isBottomSheetShown = false;
+               Navigator.pop(context);
+
+               isBottomSheetShown = false;
+             });
+
+
 
            }
 
@@ -116,7 +115,7 @@ class _LayoutNavState extends State<LayoutNav> {
 
 
            scaffoldKey.currentState?.showBottomSheet((context) => Container(
-             color: Colors.grey[150],
+             color: Colors.white,
              padding: EdgeInsets.all(20),
              child: Form(
                key: formKey,
@@ -254,8 +253,17 @@ class _LayoutNavState extends State<LayoutNav> {
 
                ),
              ),
-           ));
+           ),
+           elevation: 40.0
+           ).closed.then((value) {
+
+             isBottomSheetShown = false;
+
+           });
+
            isBottomSheetShown = true;
+
+
 
          }
 
@@ -303,71 +311,88 @@ class _LayoutNavState extends State<LayoutNav> {
 
 
 
-}
 
 
 
-Database? database;
+
+// 1- Create Database SQFlite
+
+  void createDatabase() async {
+
+
+    database = await openDatabase(
+
+      'TodoTasks.db',
+      version: 1,
+
+      onCreate: (database, version) {
+
+        print('1- Data Base Is Created ');
+
+        database.execute('CREATE TABLE Tasks (id INTEGER PRIMARY KEY, title TEXT, data TEXT, time TEXT, status TEXT ) ').then((value){
+
+          print('3-Table Is Created');
+
+        }).catchError((erorr){
+
+          print('Erorr In Data Base Is ${erorr.toString()}');
+
+        });
+
+      },
+
+      onOpen: (database) {
+
+        print('2- Data Base Is Opened');
+
+      },
 
 
 
-void createDatabase() async {
+    );
 
 
-  database = await openDatabase(
 
-    'TodoTasks.db',
-    version: 1,
+  }
 
-    onCreate: (database, version) {
+  // 2- Insert Table Into Database
 
-      print('1- Data Base Is Created ');
 
-      database.execute('CREATE TABLE Tasks (id INTEGER PRIMARY KEY, title TEXT, data TEXT, time TEXT, status TEXT ) ').then((value){
+  Future insertToDatabase(@required title, @required date, @required time) async  {
 
-        print('3-Table Is Created');
+
+    return await database?.transaction((txn)async{
+
+      await txn.rawInsert(
+        'INSERT INTO Tasks (title, data, time, status) VALUES("$title","$date", "$time", "Now")',
+      ).then((value){
+
+        print('${value} Inserted Success fully');
 
       }).catchError((erorr){
 
-        print('Erorr In Data Base Is ${erorr.toString()}');
 
+        print('erorr is ${erorr.toString()}');
       });
 
-    },
+      return null;
 
-    onOpen: (database) {
-
-      print('2- Data Base Is Opened');
-
-    },
-
-
-
-  );
-
-
-
-}
-
-void insertToDatabase()  {
-
-
-  database?.transaction((txn)async{
-
-    await txn.rawInsert(
-      'INSERT INTO Tasks (title, data, time, status) VALUES("title test","21/11/2022", "8.30pm", "Done")',
-    ).then((value){
-
-      print('${value} Inserted Success fully');
-
-    }).catchError((erorr){
-
-
-      print('erorr is ${erorr.toString()}');
     });
 
-    return null;
+  }
 
-  });
+  // 3- Get Database
+
+void getDataFromDatabase() async {
+    
+    
+    List<Map> tasks = await database!.rawQuery("SELECT * FROM Tasks");
+    
+}
+
+
+
+
 
 }
+
