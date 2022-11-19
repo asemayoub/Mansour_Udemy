@@ -4,9 +4,6 @@
 
 
 abstract class CounterStates {
-
-
-
 }
 
 class CounterIntialState extends CounterStates {}

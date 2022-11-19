@@ -37,17 +37,6 @@ class _LayoutNavState extends State<LayoutNav> {
 
   @override
 
-
-  void initState() {
-    super.initState();
-    createDatabase();
-
-  }
-
-
-
-  @override
-
   Widget build(BuildContext context) {
 
     // هنا انا بعمل للاسكافولد مفتاح عشان اقدر اخليه يتفتح اما ادوس الزرار
@@ -82,7 +71,7 @@ class _LayoutNavState extends State<LayoutNav> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: ()  {
-          
+
 
 
          if(isBottomSheetShown) {
@@ -384,10 +373,10 @@ class _LayoutNavState extends State<LayoutNav> {
   // 3- Get Database
 
 void getDataFromDatabase() async {
-    
-    
+
+
     List<Map> tasks = await database!.rawQuery("SELECT * FROM Tasks");
-    
+
 }
 
 
