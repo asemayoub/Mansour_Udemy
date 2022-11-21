@@ -106,3 +106,54 @@ suffixIcon:SufixIcon != null ? IconButton(
 border: OutlineInputBorder(),
 ),
 );
+
+Widget buildTaskItem(Map model) => Padding(
+ padding: const EdgeInsets.all(20.0),
+ child: Row(
+  children: [
+   CircleAvatar(
+    radius: 40.0,
+    child: Text('${model['time']}'),
+
+
+   ),
+   SizedBox(width: 10,),
+   Column(
+
+    mainAxisSize: MainAxisSize.min,
+    crossAxisAlignment: CrossAxisAlignment.start,
+
+    children: [
+
+     Text('${model['title']}',
+
+      style: TextStyle(
+
+       fontSize: 20.0,
+       fontWeight: FontWeight.bold,
+       color: Colors.black,
+
+      ),
+
+     ),
+     SizedBox(
+      height: 5,
+     ),
+     Text('${model['data']}',
+
+      style: TextStyle(
+
+       fontSize: 14.0,
+       fontWeight: FontWeight.w500,
+       color: Colors.grey,
+
+      ),
+
+     ),
+
+    ],
+
+   )
+  ],
+ ),
+);

@@ -14,7 +14,7 @@ class LayoutNav extends StatelessWidget {
 
 
 
-  Database? database;
+
 
 
 
@@ -27,12 +27,6 @@ class LayoutNav extends StatelessWidget {
     var scaffoldKey = GlobalKey<ScaffoldState>();
     var formKey = GlobalKey<FormState>();
 
-    // هنا انا بعمل حالة البوتوم شيت عشان اعمله حالة شرطية يفتح ويتقفل اما ادوس الزرار
-    bool isBottomSheetShown = false;
-
-    // هنا بعرف الايقون بتاعه الفلوت اكشن بوتوم بفاريابل عشان اغيرها
-
-    IconData? fabicon = Icons.add;
 
     // Form Controler Variables :
 
@@ -46,9 +40,14 @@ class LayoutNav extends StatelessWidget {
 
 
     return BlocProvider(
-      create: (BuildContext context) => AppCubit(),
+      create: (BuildContext context) => AppCubit()..createDatabase(),
       child: BlocConsumer<AppCubit, AppStates>(
-        listener:(context, AppStates state) {},
+        listener:(context, AppStates state) {
+
+          if (state is AppInsertDBStates) {
+            Navigator.pop(context);
+          }
+        },
           builder: (context, AppStates state){
 
             AppCubit cubit = AppCubit.get(context);
@@ -66,21 +65,20 @@ class LayoutNav extends StatelessWidget {
               floatingActionButton: FloatingActionButton(
                 onPressed: ()  {
 
+                  if(cubit.isBottomSheetShown) {
+                    
 
-
-                  if(isBottomSheetShown) {
 
                     // to validate form key
 
                     if(formKey.currentState!.validate()){
 
-                      insertToDatabase(
-                          titleController, dateController, timeController).then((value){
+                      cubit.insertToDatabase(titleController.text,
+                          dateController.text, timeController.text);
 
-                        Navigator.pop(context);
+                        cubit.ChangeBottomSheet(isShow: false, icon: Icons.edit);
 
-                        isBottomSheetShown = false;
-                      });
+
 
 
 
@@ -240,11 +238,11 @@ class LayoutNav extends StatelessWidget {
                         elevation: 40.0
                     ).closed.then((value) {
 
-                      isBottomSheetShown = false;
+                      cubit.ChangeBottomSheet(isShow: false, icon: Icons.edit);
 
                     });
 
-                    isBottomSheetShown = true;
+                    cubit.ChangeBottomSheet(isShow: true, icon: Icons.add);
 
 
 
@@ -256,7 +254,7 @@ class LayoutNav extends StatelessWidget {
 
 
                 },
-                child:Icon(fabicon),),
+                child:Icon(cubit.fabIcon),),
               bottomNavigationBar: BottomNavigationBar(
 
                 backgroundColor: Colors.grey[100],
@@ -303,85 +301,6 @@ class LayoutNav extends StatelessWidget {
   }
 
 
-
-
-
-
-
-// 1- Create Database SQFlite
-
-  void createDatabase() async {
-
-
-    database = await openDatabase(
-
-      'TodoTasks.db',
-      version: 1,
-
-      onCreate: (database, version) {
-
-        print('1- Data Base Is Created ');
-
-        database.execute('CREATE TABLE Tasks (id INTEGER PRIMARY KEY, title TEXT, data TEXT, time TEXT, status TEXT ) ').then((value){
-
-          print('3-Table Is Created');
-
-        }).catchError((erorr){
-
-          print('Erorr In Data Base Is ${erorr.toString()}');
-
-        });
-
-      },
-
-      onOpen: (database) {
-
-        print('2- Data Base Is Opened');
-
-      },
-
-
-
-    );
-
-
-
-  }
-
-  // 2- Insert Table Into Database
-
-
-  Future insertToDatabase(@required title, @required date, @required time) async  {
-
-
-    return await database?.transaction((txn)async{
-
-      await txn.rawInsert(
-        'INSERT INTO Tasks (title, data, time, status) VALUES("$title","$date", "$time", "Now")',
-      ).then((value){
-
-        print('${value} Inserted Success fully');
-
-      }).catchError((erorr){
-
-
-        print('erorr is ${erorr.toString()}');
-      });
-
-      return null;
-
-    });
-
-  }
-
-  // 3- Get Database
-
-  void getDataFromDatabase() async {
-
-
-    List<Map> tasks = await database!.rawQuery("SELECT * FROM Tasks");
-
-  }
 
 
 

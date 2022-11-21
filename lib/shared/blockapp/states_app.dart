@@ -6,5 +6,11 @@ class initalizeAppStates extends AppStates {}
 
 class AppChangeBottomNavBarState extends AppStates {}
 
-class AppChangeFabIcon extends AppStates {}
+
+class AppCreateDBStates extends AppStates {}
+class AppGetDBStates extends AppStates {}
+class AppInsertDBStates extends AppStates {}
+
+class AppChangeBottomSheetState extends AppStates {}
+
 
