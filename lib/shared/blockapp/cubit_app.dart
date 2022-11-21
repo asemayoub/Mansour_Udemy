@@ -31,6 +31,7 @@ class AppCubit extends Cubit<AppStates> {
   ];
   int currentIndex = 0;
 
+
 void changeIndex(int index) {
 
   currentIndex = index;
@@ -39,6 +40,12 @@ void changeIndex(int index) {
 
 
 }
+
+
+
+
+
+
 
 
 }
