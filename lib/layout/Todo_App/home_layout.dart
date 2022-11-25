@@ -5,8 +5,8 @@ import 'package:intl/intl.dart';
 import 'package:newtharwat/modules/archive_task/archive_tasks.dart';
 import 'package:newtharwat/modules/done_tasks/done_tasks.dart';
 import 'package:newtharwat/modules/new_tasks/new_tasks.dart';
-import 'package:newtharwat/shared/blockapp/cubit_app.dart';
-import 'package:newtharwat/shared/blockapp/states_app.dart';
+import 'package:newtharwat/layout/Todo_App/Cubite/cubit_app.dart';
+import 'package:newtharwat/layout/Todo_App/Cubite/states_app.dart';
 import 'package:newtharwat/shared/components/components.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -73,8 +73,11 @@ class LayoutNav extends StatelessWidget {
 
                     if(formKey.currentState!.validate()){
 
-                      cubit.insertToDatabase(titleController.text,
-                          dateController.text, timeController.text);
+                      cubit.insertToDatabase(
+                          titleController.text,
+                          dateController.text,
+                          timeController.text
+                      );
 
                         cubit.ChangeBottomSheet(isShow: false, icon: Icons.edit);
 

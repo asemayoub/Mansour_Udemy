@@ -1,12 +1,13 @@
+
 import 'package:bloc/bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:newtharwat/shared/blockapp/states_app.dart';
+import 'package:newtharwat/layout/Todo_App/Cubite/states_app.dart';
 import 'package:sqflite/sqflite.dart';
-import '../../modules/archive_task/archive_tasks.dart';
-import '../../modules/done_tasks/done_tasks.dart';
-import '../../modules/new_tasks/new_tasks.dart';
+import '../../../modules/archive_task/archive_tasks.dart';
+import '../../../modules/done_tasks/done_tasks.dart';
+import '../../../modules/new_tasks/new_tasks.dart';
 
 
 class AppCubit extends Cubit<AppStates> {
@@ -16,6 +17,7 @@ class AppCubit extends Cubit<AppStates> {
   static AppCubit get(context) => BlocProvider.of(context);
 
 
+// List Widget Screen Pages
 
   List<Widget> screens = [
 
@@ -24,6 +26,8 @@ class AppCubit extends Cubit<AppStates> {
     ArchiveTasks(),
   ];
 
+  // List String Names Of App Screen
+
   List<String> appbarScreen = [
 
     'New Tasks',
@@ -31,6 +35,7 @@ class AppCubit extends Cubit<AppStates> {
     'Archive Tasks'
 
   ];
+
   int currentIndex = 0;
   List<Map> tasks = [];
 
@@ -103,7 +108,7 @@ emit(AppChangeBottomSheetState());
 
         // يتم انشاء جداول لقاعدة البينات كالاتي
 
-        database.execute('CREATE TABLE Tasks (id INTEGER PRIMARY KEY, title TEXT, data TEXT, time TEXT, status TEXT ) ').then((value){
+        database.execute('CREATE TABLE Tasks (id INTEGER PRIMARY KEY , title TEXT, data TEXT, time TEXT, status TEXT ) ').then((value){
 
           print('3-Table Is Created');
 
@@ -197,14 +202,25 @@ emit(AppChangeBottomSheetState());
   }
 
 
-// Get Database
+// Update DateBase
 
+void UpdateDataBase({
+  // هنا انا ضفتهم عشان دول اللي انا محتاج اعمل تحديث عليهم واضيفهم تحت فبالتالي بعملهم مطلوبين
+  @required String? status,
 
+    @required int? id,
 
+}) async {
 
+ database!.rawUpdate(
+      'UPDATE Tasks SET status = ? WHERE id = ?',
+      ['$status', id]).then((value){
 
+        emit(AppUpdateDBstates());
 
-  // ======================================= DataBase End
+ });
+
+}
 
 
 

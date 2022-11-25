@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:newtharwat/modules/login/modules.dart';
+import 'package:newtharwat/layout/Todo_App/Cubite/cubit_app.dart';
 
 Widget DefaultButtom({
 
@@ -107,7 +108,7 @@ border: OutlineInputBorder(),
 ),
 );
 
-Widget buildTaskItem(Map model) => Padding(
+Widget buildTaskItem(Map model,context) => Padding(
  padding: const EdgeInsets.all(20.0),
  child: Row(
   children: [
@@ -118,42 +119,153 @@ Widget buildTaskItem(Map model) => Padding(
 
    ),
    SizedBox(width: 10,),
-   Column(
+   Expanded(
+     child: Column(
 
-    mainAxisSize: MainAxisSize.min,
-    crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
 
+      children: [
+
+       Text('${model['title']}',
+        maxLines: 2,
+
+        style: TextStyle(
+
+         fontSize: 20.0,
+         fontWeight: FontWeight.bold,
+         color: Colors.black,
+
+
+        ),
+
+       ),
+       SizedBox(
+        height: 5,
+       ),
+       Text('${model['data']}',
+
+        style: TextStyle(
+
+         fontSize: 14.0,
+         fontWeight: FontWeight.w500,
+         color: Colors.grey,
+
+        ),
+
+       ),
+
+      ],
+
+     ),
+   ),
+   Row(
     children: [
+     IconButton(onPressed: (){
 
-     Text('${model['title']}',
+      AppCubit.get(context).UpdateDataBase(status: 'Done', id: model['id'],);
 
-      style: TextStyle(
 
-       fontSize: 20.0,
-       fontWeight: FontWeight.bold,
-       color: Colors.black,
-
-      ),
-
+     },
+         icon: Icon(Icons.check_box,color: Colors.green,size: 28,),
      ),
-     SizedBox(
-      height: 5,
+     IconButton(onPressed: (){
+
+      AppCubit.get(context).UpdateDataBase(status: 'Archive', id: model['id'],);
+     },
+      icon: Icon(Icons.archive,color: Colors.grey,size: 28,),
      ),
-     Text('${model['data']}',
-
-      style: TextStyle(
-
-       fontSize: 14.0,
-       fontWeight: FontWeight.w500,
-       color: Colors.grey,
-
-      ),
-
-     ),
-
     ],
-
    )
   ],
  ),
+);
+// News Item Widget
+Widget NewsItem(article) => Padding(
+ padding: const EdgeInsets.all(20.0),
+ child: Row(
+
+  children: [
+
+
+   Container(
+
+    width: 120,
+    height: 120,
+    decoration: BoxDecoration(
+
+     borderRadius: BorderRadius.circular(10.0),
+     image: DecorationImage(
+      image:
+      NetworkImage('${article['urlToImage']}',
+      ),
+      fit: BoxFit.cover,
+
+
+
+
+     ),
+
+
+    ),
+
+   ),
+   SizedBox(width: 20,),
+   Expanded(
+    child: Container(
+     height: 120,
+     child: Column(
+
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,
+
+      children: [
+
+       Text('${article['title']}'
+        ,
+        style: TextStyle(
+         fontSize: 18.0,
+         fontWeight: FontWeight.w600,
+
+        ),
+        maxLines: 3,
+        overflow:TextOverflow.ellipsis ,
+
+       ),
+       SizedBox(height: 10,),
+       Text('${article['publishedAt']}'
+        ,
+        style: TextStyle(
+         fontSize: 13.0,
+         fontWeight: FontWeight.w600,
+         color: Colors.grey,
+
+        ),
+
+       ),
+
+
+      ],
+
+
+     ),
+    ),
+   ),
+
+
+
+  ],
+
+ ),
+);
+
+Widget DeviderItem() => Padding(
+  padding: const EdgeInsetsDirectional.only(start: 20),
+  child:   Container(
+
+   width: 1,
+   height: 1,
+   color: Colors.grey[300],
+
+  ),
 );
